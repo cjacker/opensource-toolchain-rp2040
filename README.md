@@ -162,6 +162,9 @@ A wrapper script 'pico-swd' is provided within this repo, you can modify (change
 pico-swd write blink.hex
 ```
 
+You can also use 'blink.bin' file instead of 'blink.hex'.
+
+
 # Debugging
 
 First, you need attach to the MCU, launch a terminal and run:
@@ -254,23 +257,72 @@ Thread 1 hit Breakpoint 1, main () at pico-examples/blink/blink.c:18
 (gdb)
 ```
 
+# Project template
+The pico-sdk is managed by cmake very well, it's very easy to setup a new project, Here we use the blink.c as example:
 
+```
+//blink.c
+/**
+ * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+ 
+#include "pico/stdlib.h"
 
+int main() {
+#ifndef PICO_DEFAULT_LED_PIN
+#warning blink example requires a board with a regular LED
+#else
+    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    while (true) {
+        gpio_put(LED_PIN, 1);
+        sleep_ms(200);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(200);
+    }
+#endif
+}
+```
 
+First, create a dir for project 'blink' and put blink.c into it, then create 'CMakeLists.txt' and set up your project to point to use the Raspberry Pi Pico SDK
 
+```
+cmake_minimum_required(VERSION 3.13)
 
+# initialize the SDK based on PICO_SDK_PATH
+# note: this must happen before project()
+include(pico_sdk_import.cmake)
 
+project(my_project)
 
+# initialize the Raspberry Pi Pico SDK
+pico_sdk_init()
 
+add_executable(blink
+    blink.c
+)
 
+# Add pico_stdlib library which aggregates commonly used features
+target_link_libraries(blink pico_stdlib)
 
+# create map/bin/hex/uf2 file in addition to ELF.
+pico_add_extra_outputs(blink)
+```
 
+And 
 
+```
+cp $PICO_SDK_PATH/external/pico_sdk_import.cmake .
+```
 
+Then setup a CMake build directory and build it:
 
-
-
-
-
-
-
+```
+mkdir build
+cd build
+cmake .. #-DCMAKE_BUILD_TYPE=debug, if you need debug build.
+make
+```
