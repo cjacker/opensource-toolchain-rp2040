@@ -97,7 +97,7 @@ $PICOCMD \
   init;
   reset halt;
   targets rp2040.core0;
-  flash write_image erase ${TARGET};
+  flash write_image erase ${WRITE_TARGET};
   reset;
   shutdown;
   "
