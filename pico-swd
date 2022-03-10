@@ -1,0 +1,105 @@
+#!/usr/bin/bash
+CMD=$(basename $0)
+SUBCMD=$1
+IMAGE_FILE=$2
+WRITE_TARGET=
+
+# usage
+if [ "test"$SUBCMD == "test" ];then
+  echo "usage: pico-swd [attach|reset|write <image file>|dump <image file>]"
+  exit 0
+fi
+
+if [ $SUBCMD != "reset" ] && [ $SUBCMD != "attach" ] && [ $SUBCMD != "write" ] && [ $SUBCMD != "dump" ] && [ $SUBCMD != "halt" ]; then
+  echo "usage: pico-swd [attach|reset|halt|write <image file>|dump <image file>]"
+  exit 0
+fi
+
+# dump need a filename to write
+if [ $SUBCMD == "dump" ]; then
+  if [ "test"$IMAGE_FILE == "test" ]; then
+    echo "Please specify image filename to dump"
+    exit 1;
+  fi
+fi
+  
+# write only support hex/bin image 
+# and need image filename
+if [ $SUBCMD == "write" ]; then
+  if [ "test"$IMAGE_FILE == "test" ]; then
+    echo "Please specify image filename to write"
+    exit 1;
+  fi
+  EXT="${IMAGE_FILE##*.}"
+  if [ "${EXT}" == "hex" ]; then
+    WRITE_TARGET="$IMAGE_FILE"
+  elif [ "${EXT}" == "bin" ]; then
+    WRITE_TARGET="$IMAGE_FILE $FLASH_ADDR"
+  else
+    echo "Please specify \"bin\" or \"hex\" image file to write."
+    exit 1
+  fi
+fi
+
+ 
+FLASH_ADDR=0x10000000
+FLASH_SIZE=10240
+
+PICOCMD="sudo pico-openocd \
+  -f /usr/share/openocd/scripts/interface/tigard-swd.cfg \
+  -f /usr/share/pico-openocd/openocd/scripts/target/rp2040.cfg"
+
+# halt
+if [ $SUBCMD == "halt" ];then
+$PICOCMD \
+  -c \
+  "
+  init;
+  reset halt;
+  shutdown;
+  "
+fi
+
+# reset
+if [ $SUBCMD == "reset" ];then
+$PICOCMD \
+  -c \
+  "
+  init;
+  reset;
+  shutdown;
+  "
+fi
+
+# attach
+if [ $SUBCMD == "attach" ];then
+$PICOCMD
+fi
+
+# dump flash to $IMAGE_FILE
+if [ $SUBCMD == "dump" ];then
+$PICOCMD \
+  -c \
+  "
+  init;
+  reset halt;
+  dump_image ${IMAGE_FILE} ${FLASH_ADDR} ${FLASH_SIZE};
+  reset;
+  shutdown;
+  "
+fi
+
+# write bin or hex image to pico
+if [ $SUBCMD == "write" ];then
+$PICOCMD \
+  -c \
+  "   
+  init;
+  reset halt;
+  targets rp2040.core0;
+  flash write_image erase ${TARGET};
+  reset;
+  shutdown;
+  "
+fi
+
