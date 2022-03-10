@@ -17,7 +17,7 @@ A number of manufacturers have announced their own boards using the RP2040, amon
 # Hardware requirements
 
 * A RP2040 board. Here I use PICO, and you have many other choices such as seeedstudio XIAO and various other PICO compatible boards.
-* A USB SWD adapter. 
+* A USB CMSIS DAP adapter with SWD interface.
 
 **NOTE**
 RP2040 can work as a USB storage if 'holding the bootsel button down and plug in', you can mount it and DND hex file to flash. but it does not support debugging and a little bit slow, so you'd better prepare a SWD adapter for debugging.
@@ -144,7 +144,11 @@ NOTE here use 'pico-' program prefix to avoid conflict with system wide openocd.
 
 After pico-openocd installed, please wire up your SWD adapter with the corresponding PINs of PICO, there are 3 pins (GND/SWDIO/SWCLK) marked as 'debug' in PICO board. you can use USB cable to supply power and connect that 3pins, or use SWD adapter only to supply power (3.3v, connect to VSYS/VIN pin). 
 
-Here I use [tigard](https://github.com/tigard-tools/tigard) as SWD adapter.
+<img src="https://user-images.githubusercontent.com/1625340/157585375-e06f80d3-d4ec-46a2-9f09-caf213f32a20.png"/>
+
+There is also a lot of DOCKs for pico with CMSIS DAP integrated, it's more convenient, you can also use such a DOCK.
+
+Here I use standalone [tigard](https://github.com/tigard-tools/tigard) FT2232 board as SWD adapter.
 
 to flashing the 'blink.hex' from blink example:
 
@@ -157,6 +161,43 @@ A wrapper script 'pico-swd' is provided within this repo, you can modify (change
 ```
 pico-swd write blink.hex
 ```
+
+# Debugging
+
+First, you need attach to MCU with:
+
+```
+sudo pico-openocd -f tigard-swd.cfg -f /opt/pico-openocd/share/openocd/scripts/target/rp2040.cfg
+```
+
+or simply run:
+```
+pico-swd attach
+```
+
+the output looks like:
+```
+Open On-Chip Debugger 0.11.0-g610f137 (2022-02-23-00:47)
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : FTDI SWD mode enabled
+Info : Hardware thread awareness created
+Info : Hardware thread awareness created
+Info : RP2040 Flash Bank Command
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : clock speed 2000 kHz
+Info : SWD DPIDR 0x0bc12477
+Info : SWD DLPIDR 0x00000001
+Info : SWD DPIDR 0x0bc12477
+Info : SWD DLPIDR 0x10000001
+Info : rp2040.core0: hardware has 4 breakpoints, 2 watchpoints
+Info : rp2040.core1: hardware has 4 breakpoints, 2 watchpoints
+Info : starting gdb server for rp2040.core0 on 3333
+Info : Listening on port 3333 for gdb connections
+```
+
 
 
 
