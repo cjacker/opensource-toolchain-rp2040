@@ -16,25 +16,25 @@ A number of manufacturers have announced their own boards using the RP2040, amon
 
 # Hardware requirements
 
-* A RP2040 board. Here I use PICO, and you have many other choices such as seeedstudio XIAO and various other PICO compatible boards.
-* A USB CMSIS DAP adapter with SWD interface.
+* A RP2040 board. here I use PICO, and you have many other choices such as seeedstudio XIAO and various other PICO compatible boards.
+* A USB to SWD adapter.
 
 **NOTE**
 RP2040 can work as a USB storage if 'holding the bootsel button down and plug in', you can mount it and DND hex file to flash. but it does not support debugging and a little bit slow, so you'd better prepare a SWD adapter for debugging.
 
 # Toolchain overview
-* Compiler, arm gnu toolchain
+* Compiler, ARM GNU toolchain
 * Debugger, OpenOCD/gdb
 * SDK, pico-sdk/pico-extras
-* Flashing tool, OpenOCD or via USB storage.
-
+* Flashing tool, OpenOCD or USB storage mode.
 
 # ARM GNU Toolchain
-As same as STM32 and various ARM based MCU, RP2040 use the 'arm-none-eabi' GNU toolchain. it's not neccesary to build the toolchain yourself, since there are already a lot of well supported prebuilt release and already widely used by developers. If you insist to build it yourself, you can refer to [linaro project](https://www.linaro.org/).
 
-Here I use linaro prebuilt toolchain with X86_64 Linux, you can download it from https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads.
+As same as STM32 and various ARM MCU, RP2040 use the 'arm-none-eabi' GNU toolchain. it's not neccesary to build the toolchain yourself, since there are already a lot of well supported prebuilt release and already widely used by developers. If you insist to build it yourself, you can refer to [linaro project](https://www.linaro.org/).
 
-Download and extract the toolchain
+You can download the toolchain for various ARCH from https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads.
+
+Download and extract the toolchain (here is x86_64 linux)
 ```
 wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
 sudo tar xf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 -C /opt
@@ -44,7 +44,7 @@ And add `/opt/gcc-arm-none-eabi-10.3-2021.10/bin` to PATH env according to the s
 
 NOTE the toolchain's tripplet is 'arm-none-eabi'.
 
-There are also a lot of prebuilt arm-none-eabi toolchains from other vendors, you can also use them as you like.
+There are also a lot of prebuilt 'arm-none-eabi' toolchains from other vendors, you can also use them as you like.
 
 # SDK
 ## pico-sdk
@@ -63,13 +63,13 @@ cd pico-sdk
 git submodule update --init
 ```
 
-You can put pico-sdk system-wide or use it within your project. here we put it system-wide
+You can put pico-sdk system-wide or use it within your project. here put it system-wide
 
 ```
 sudo mv pico-sdk /opt
 ```
 
-And set `PICO_SDK_PATH` to the SDK location (here is `/opt/pico-sdk`) in your environment, or pass it (-DPICO_SDK_PATH=/opt/pico-sdk) to cmake later.
+And set `PICO_SDK_PATH` to the SDK location `/opt/pico-sdk` in your environment, or pass it (-DPICO_SDK_PATH=/opt/pico-sdk) to cmake later.
 
 After SDK setup, you can fetch the `pico-examples` and try to build it.
 
@@ -83,11 +83,11 @@ cd blink
 make
 ```
 
-After built successfully, a lot of file include 'blink.elf', 'blink.hex' and 'blink.uf2' will be generated.
+After built successfully, a lot of files include 'blink.elf', 'blink.hex' and 'blink.uf2' will be generated.
 
 ## pico-extras
 
-There are also some additional libraries provided in 'pico-extras' that are not yet ready for inclusion the Pico SDK proper, or are just useful but don't necessarily belong in the Pico SDK. the corresponding examples is 'pico-playground'.
+There are also some additional libraries provided in 'pico-extras' that are not yet ready for inclusion the Pico SDK proper, or are just useful but don't necessarily belong in the Pico SDK. the corresponding examples for 'pico-extras' is 'pico-playground'.
 
 NOTE, it depend on pico-sdk, you need setup pico-sdk correctly first.
 
@@ -133,6 +133,7 @@ After flashing complete, the LED on board will blink.
 The upstream OpenOCD is lack of supporting for RP2040, so you can not use official OpenOCD with RP2040, and have to build the fork version from RPI yourself.
 
 Building and Installation:
+
 ```
 git clone https://github.com/raspberrypi/openocd.git --recursive --branch rp2040 --depth=1
 cd openocd
@@ -140,6 +141,7 @@ cd openocd
 make
 sudo make install
 ```
+
 NOTE here use 'pico-' program prefix to avoid conflict with system wide openocd. and install it to `/opt/pico-openocd/`, you need add `/opt/pico-openocd/bin` to PATH env.
 
 After pico-openocd installed, please wire up your SWD adapter with the corresponding PINs of PICO, there are 3 pins (GND/SWDIO/SWCLK) marked as 'debug' in PICO board. you can use USB cable to supply power and connect that 3pins, or use SWD adapter only to supply power (3.3v, connect to VSYS/VIN pin). 
@@ -179,6 +181,7 @@ pico-swd attach
 ```
 
 the output looks like:
+
 ```
 Open On-Chip Debugger 0.11.0-g610f137 (2022-02-23-00:47)
 Licensed under GNU GPL v2
@@ -258,6 +261,7 @@ Thread 1 hit Breakpoint 1, main () at pico-examples/blink/blink.c:18
 ```
 
 # Project template
+
 The pico-sdk is managed by cmake very well, it's very easy to setup a new project, Here we use the blink.c as example:
 
 ```
