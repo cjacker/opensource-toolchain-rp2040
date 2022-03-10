@@ -164,7 +164,7 @@ pico-swd write blink.hex
 
 # Debugging
 
-First, you need attach to MCU with:
+First, you need attach to the MCU, launch a terminal and run:
 
 ```
 sudo pico-openocd -f tigard-swd.cfg -f /opt/pico-openocd/share/openocd/scripts/target/rp2040.cfg
@@ -198,8 +198,61 @@ Info : starting gdb server for rp2040.core0 on 3333
 Info : Listening on port 3333 for gdb connections
 ```
 
+Then launch another terminal, build the blink example with debug infomation:
 
+```
+cd pico-examples
+mkdir build-debug
+cd build-debug
+cmake -DCMAKE_BUILD_TYPE=debug ..
+cd blink
+make
+arm-none-eabi-gdb ./blink.elf
+```
 
+And a gdb session will opened:
+
+```
+Reading symbols from ./blink.elf...
+(gdb) target remote :3333
+Remote debugging using :3333
+warning: multi-threaded target stopped without sending a thread-id, using first non-exited thread
+main () at blink/blink.c:18
+18              sleep_ms(500);
+(gdb) list main
+4        * SPDX-License-Identifier: BSD-3-Clause
+5        */
+6
+7       #include "pico/stdlib.h"
+8
+9       int main() {
+10      #ifndef PICO_DEFAULT_LED_PIN
+11      #warning blink example requires a board with a regular LED
+12      #else
+13          const uint LED_PIN = PICO_DEFAULT_LED_PIN;
+(gdb) list
+14          gpio_init(LED_PIN);
+15          gpio_set_dir(LED_PIN, GPIO_OUT);
+16          while (true) {
+17              gpio_put(LED_PIN, 1);
+18              sleep_ms(500);
+19              gpio_put(LED_PIN, 0);
+20              sleep_ms(500);
+21          }
+22      #endif
+23      }
+(gdb) break 18
+Breakpoint 1 at 0x10000328: file pico-examples/blink/blink.c, line 18.
+Note: automatically using hardware breakpoints for read-only addresses.
+(gdb) c
+Continuing.
+target halted due to debug-request, current mode: Thread
+xPSR: 0x01000000 pc: 0x00000178 msp: 0x20041f00
+
+Thread 1 hit Breakpoint 1, main () at pico-examples/blink/blink.c:18
+18              sleep_ms(500);
+(gdb)
+```
 
 
 
