@@ -265,8 +265,9 @@ Thread 1 hit Breakpoint 1, main () at pico-examples/blink/blink.c:18
 The pico-sdk is managed by cmake very well, it's very easy to setup a new project, Here we use the blink.c as example:
 
 ```
-//blink.c
 /**
+ * blink.c
+ *
  * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
  *
  * SPDX-License-Identifier: BSD-3-Clause
