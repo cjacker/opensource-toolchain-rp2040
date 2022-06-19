@@ -1,5 +1,7 @@
 # Opensource toolchain for RPI RP2040
 
+**NOTE: the MIT license of this repo means all individual resources made by myself, the content of the tutorial and the example codes is licensed under MIT. All third-party opensource projects, upstream source codes and patches to other opensource projects will/should follow their own LICENSE.**
+
 The RP2040 is a 32-bit dual ARM Cortex-M0+ microcontroller integrated circuit by Raspberry Pi Foundation. At the same time, it was released as part of the Raspberry Pi Pico board.
 
 It announced on 21st January 2021, the RP2040 is the first microcontroller designed by the Raspberry Pi Foundation. The microcontroller is low cost, with the Raspberry Pi Pico being introduced at US$4 and the RP2040 itself costing US$1. The microcontroller can be programmed in Assembly, Rust, C/C++ and MicroPython. It is powerful enough to run TensorFlow Lite.
