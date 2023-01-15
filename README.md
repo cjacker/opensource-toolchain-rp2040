@@ -18,15 +18,15 @@ A number of manufacturers have announced their own boards using the RP2040, amon
 
 # Hardware requirements
 
-* A RP2040 board. here I use official PICO, and you have many other choices such as seeedstudio XIAO and various other PICO compatible boards.
-* A USB to SWD adapter. Such as CMSIS-DAPLink, Tigard(FT2232) etc.
+* A RP2040 board. here I use official PICO.
+* A USB to SWD adapter. Such as CMSIS-DAPLink, Tigard(FT2232) etc, or a pico dock with daplink integrated.
 
 **NOTE**
 RP2040 can work as a USB storage if 'holding the bootsel button down and plug in', you can mount it and DND hex file to flash. but it does not support debugging and a little bit slow, so you'd better prepare a SWD adapter for debugging.
 
 # Toolchain overview
 * Compiler, ARM GNU toolchain
-* Debugger, OpenOCD/gdb (Use OpenOCD 0.12 and above version, or pico-openocd fork)
+* Debugger, OpenOCD/gdb (OpenOCD 0.12 and above version, or pico-openocd fork)
 * SDK, pico-sdk/pico-extras
 * Flashing tool, OpenOCD or USB storage mode.
 
