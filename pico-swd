@@ -1,4 +1,12 @@
 #!/usr/bin/bash
+
+#change below settings according to your adapter and openocd installation.
+OPENOCD="openocd"
+INTERFACE_CFG="/usr/share/openocd/scripts/interface/cmsis-dap.cfg"
+TARGET_CFG="/usr/share/openocd/scripts/target/rp2040.cfg"
+
+OPENOCD_CMD="sudo $OPENOCD -f $INTERFACE_CFG -f $TARGET_CFG"
+
 CMD=$(basename $0)
 SUBCMD=$1
 IMAGE_FILE=$2
@@ -45,13 +53,9 @@ fi
 FLASH_ADDR=0x10000000
 FLASH_SIZE=10240
 
-PICOCMD="sudo pico-openocd \
-  -f /usr/share/openocd/scripts/interface/tigard-swd.cfg \
-  -f /usr/share/pico-openocd/openocd/scripts/target/rp2040.cfg"
-
 # halt
 if [ $SUBCMD == "halt" ];then
-$PICOCMD \
+$OPENOCD_CMD \
   -c \
   "
   init;
@@ -62,7 +66,7 @@ fi
 
 # reset
 if [ $SUBCMD == "reset" ];then
-$PICOCMD \
+$OPENOCD_CMD \
   -c \
   "
   init;
@@ -73,12 +77,12 @@ fi
 
 # attach
 if [ $SUBCMD == "attach" ];then
-$PICOCMD
+$OPENOCD_CMD
 fi
 
 # dump flash to $IMAGE_FILE
 if [ $SUBCMD == "dump" ];then
-$PICOCMD \
+$OPENOCD_CMD \
   -c \
   "
   init;
@@ -91,7 +95,7 @@ fi
 
 # write bin or hex image to pico
 if [ $SUBCMD == "write" ];then
-$PICOCMD \
+$OPENOCD_CMD \
   -c \
   "   
   init;
