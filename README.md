@@ -18,15 +18,15 @@ A number of manufacturers have announced their own boards using the RP2040, amon
 
 # Hardware requirements
 
-* A RP2040 board. here I use PICO, and you have many other choices such as seeedstudio XIAO and various other PICO compatible boards.
-* A USB to SWD adapter.
+* A RP2040 board. here I use official PICO, and you have many other choices such as seeedstudio XIAO and various other PICO compatible boards.
+* A USB to SWD adapter. Such as CMSIS-DAPLink, Tigard(FT2232) etc.
 
 **NOTE**
 RP2040 can work as a USB storage if 'holding the bootsel button down and plug in', you can mount it and DND hex file to flash. but it does not support debugging and a little bit slow, so you'd better prepare a SWD adapter for debugging.
 
 # Toolchain overview
 * Compiler, ARM GNU toolchain
-* Debugger, OpenOCD/gdb
+* Debugger, OpenOCD/gdb (Use OpenOCD 0.12 and above version, or pico-openocd fork)
 * SDK, pico-sdk/pico-extras
 * Flashing tool, OpenOCD or USB storage mode.
 
@@ -132,13 +132,14 @@ After flashing complete, the LED on board will blink.
 
 ## OpenOCD/SWD
 
-The upstream OpenOCD is lack of supporting for RP2040, so you can not use official OpenOCD with RP2040, and have to build the fork version from RPI yourself.
+OpenOCD **0.12** and above version has RP2040 support upstreamed, If your distribution already update to OpenOCD 0.12, you can use it directly, otherwise you may have to build it yourself.
 
 Building and Installation:
 
 ```
-git clone https://github.com/raspberrypi/openocd.git --recursive --branch rp2040 --depth=1
+git clone https://github.com/openocd-org/openocd.git
 cd openocd
+git submodule update --init --recursive --progress
 ./configure --prefix=/opt/pico-openocd --program-prefix=pico- --enable-cmsis-dap --disable-werror
 make
 sudo make install
@@ -153,6 +154,8 @@ After pico-openocd installed, please wire up your SWD adapter with the correspon
 There is also a lot of DOCKs for pico with CMSIS DAP integrated, it's more convenient, you can also use such a DOCK.
 
 Here I use standalone [tigard](https://github.com/tigard-tools/tigard) FT2232 board as SWD adapter.
+
+If you use a DAPLink, please change `tigard-swd.cfg` to `cmsis-dap.cfg` for all below commands. and also need to change the config file path according to your OpenOCD installation.
 
 to flashing the 'blink.hex' from blink example:
 
@@ -185,7 +188,7 @@ pico-swd attach
 the output looks like:
 
 ```
-Open On-Chip Debugger 0.11.0-g610f137 (2022-02-23-00:47)
+Open On-Chip Debugger 0.12.0
 Licensed under GNU GPL v2
 For bug reports, read
         http://openocd.org/doc/doxygen/bugs.html
