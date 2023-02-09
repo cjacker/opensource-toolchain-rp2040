@@ -34,15 +34,15 @@ RP2040 can work as a USB storage if 'holding the bootsel button down and plug in
 
 As same as STM32 and various ARM MCU, RP2040 use the 'arm-none-eabi' GNU toolchain. it's not neccesary to build the toolchain yourself, since there are already a lot of well supported prebuilt release and already widely used by developers. If you insist to build it yourself, you can refer to [linaro project](https://www.linaro.org/).
 
-You can download the toolchain for various ARCH from https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads.
+You can download the toolchain for various ARCH from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads.
 
-Download and extract the toolchain (here is x86_64 linux)
+Download and extract the toolchain (here the host is x86_64 linux)
 ```
-wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-aarch64-none-elf.tar.xz
 sudo tar xf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 -C /opt
 ```
 
-And add `/opt/gcc-arm-none-eabi-10.3-2021.10/bin` to PATH env according to the shell you used.
+And add `/opt/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin` to PATH env according to the shell you used.
 
 NOTE the toolchain's tripplet is 'arm-none-eabi'.
 
