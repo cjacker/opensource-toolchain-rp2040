@@ -32,22 +32,36 @@ RP2040 can work as a USB storage if 'holding the bootsel button down and plug in
 
 # ARM GNU Toolchain
 
-As same as STM32 and various ARM MCU, RP2040 use the 'arm-none-eabi' GNU toolchain. it's not neccesary to build the toolchain yourself, since there are already a lot of well supported prebuilt release and already widely used by developers. If you insist to build it yourself, you can refer to [linaro project](https://www.linaro.org/).
+As same as STM32 and various ARM MCU, RP2040 use the 'arm-none-eabi' GNU toolchain. it's not neccesary to build the toolchain yourself, since there are already a lot of well supported prebuilt release and already widely used by developers.
 
-You can download the toolchain for various ARCH from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads.
+### from XPack
+[xpack-dev-tools](https://github.com/xpack-dev-tools) provde a prebuilt 'arm-none-eabi' toolchain. you can download it from [here](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v12.2.1-1.2/xpack-arm-none-eabi-gcc-12.2.1-1.2-linux-x64.tar.gz). 
 
-Download and extract the toolchain (here the host is x86_64 linux)
+After download:
 ```
-wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu/12.2.rel1/binrel/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz
+sudo mkdir -p /opt/xpack-arm-none-eabi
+sudo tar xf xpack-arm-none-eabi-gcc-12.2.1-1.2-linux-x64.tar.gz -C /opt/xpack-arm-none-eabi --strip-components=1
+```
+and add /opt/xpack-arm-none-eabi/bin to PATH env.
 
-sudo tar xf arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi.tar.xz -C /opt
+NOTE, the triplet of xpack prebuilt toolchain is 'arm-none-eabi'.
+
+### from ARM
+
+You can download the prebuilt toolchain for various host from https://developer.arm.com/downloads/-/gnu-rm. 
+
+**Note:** There is prebuilt arm-gcc v12.2 and can be downloaded from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads, but the gdb debugger broken due to python issue, do not use the latest 12.2 version until python issue fixed.
+
+Download and extract the toolchain for x86_64 linux:
+
+```
+wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+sudo tar xf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 -C /opt
 ```
 
-And add `/opt/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin` to PATH env according to the shell you used.
+And add `/opt/gcc-arm-none-eabi-10.3-2021.10/bin` to PATH env of your shell.
 
-NOTE the toolchain's tripplet is 'arm-none-eabi'.
-
-There are also a lot of prebuilt 'arm-none-eabi' toolchains from other vendors, you can also use them as you like.
+**NOTE:** the toolchain's tripplet is 'arm-none-eabi'.
 
 # SDK
 ## pico-sdk
